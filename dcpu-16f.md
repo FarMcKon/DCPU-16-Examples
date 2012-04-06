@@ -20,7 +20,7 @@ In this document, anything within [brackets] is shorthand for "the value of the 
 
 Whenever the CPU needs to read a word, it reads [PC], then increases PC by one. Shorthand for this is [PC++]. In some cases, the CPU will modify a value before reading it, in this case the shorthand is [++PC].
 
-## Instructions
+# Instructions
 DCPU-16  Instructions are 1-3 words long and are fully defined by the first word.
 
 ## Basic OpCodes
@@ -94,7 +94,7 @@ Non-basic opcodes: (6 bits)
 * Audio Output takes 2 cycles
 * Audio Input takes 4 cycles
 
-FAQ:
+#FAQ:
 
 Q: Why is there no JMP or RET?
 A: They're not needed! "SET PC, <target>" is a one-instruction JMP.
