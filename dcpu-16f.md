@@ -1,7 +1,7 @@
-DCPU-16 Specification
-Copyright 2012 Mojang
-Version 1.1 (Check 0x10c.com for updated versions)
-Version 1.1-f (Check  https://github.com/FarMcKon/DCPU-16-Examples/blob/master/dcpu-16f.md for updated versions)
+#DCPU-16 Specification
+* Copyright 2012 Mojang
+* Version 1.1 (Check 0x10c.com for updated versions)
+* Version 1.1-f (Check  https://github.com/FarMcKon/DCPU-16-Examples/blob/master/dcpu-16f.md for updated versions)
 
 # Overview 
 * 16 bit unsigned words
@@ -20,8 +20,8 @@ In this document, anything within [brackets] is shorthand for "the value of the 
 
 Whenever the CPU needs to read a word, it reads [PC], then increases PC by one. Shorthand for this is [PC++]. In some cases, the CPU will modify a value before reading it, in this case the shorthand is [++PC].
 
-# Instructions
-DCPU-16  Instructions are 1-3 words long and are fully defined by the first word.
+# DCPU-16 Instructions
+Instructions are 1-3 words long and are fully defined by the first word.
 
 ## Basic OpCodes
 In a basic instruction, the lower four bits of the first word of the instruction are the opcode, 
@@ -29,19 +29,19 @@ and the remaining twelve bits are split into two six bit values, called a and b.
 
 A is always handled by the processor before b, and is the lower six bits.
 
-Values: (6 bits)
-    0x00-0x07: register (A, B, C, X, Y, Z, I or J, in that order)
-    0x08-0x0f: [register]
-    0x10-0x17: [next word + register]
-         0x18: POP / [SP++]
-         0x19: PEEK / [SP]
-         0x1a: PUSH / [--SP]
-         0x1b: SP
-         0x1c: PC
-         0x1d: O
-         0x1e: [next word]
-         0x1f: next word (literal)
-    0x20-0x3f: literal value 0x00-0x1f (literal)
+###Values: (6 bits)
+            0x00-0x07: register (A, B, C, X, Y, Z, I or J, in that order)
+            0x08-0x0f: [register]
+            0x10-0x17: [next word + register]
+                 0x18: POP / [SP++]
+                 0x19: PEEK / [SP]
+                 0x1a: PUSH / [--SP]
+                 0x1b: SP
+                 0x1c: PC
+                 0x1d: O
+                 0x1e: [next word]
+                 0x1f: next word (literal)
+            0x20-0x3f: literal value 0x00-0x1f (literal)
 
 * "next word" really means "[PC++]". These increase the word length of the instruction by 1. 
 * If any instruction tries to assign a literal value, the assignment fails silently. Other than that, the instruction behaves as normal.
@@ -50,23 +50,23 @@ Values: (6 bits)
 
 
 
-Basic opcodes: (4 bits)
-    0x0: non-basic instruction - see below
-    0x1: SET a, b - sets a to b
-    0x2: ADD a, b - sets a to a+b, sets O to 0x0001 if there's an overflow, 0x0 otherwise
-    0x3: SUB a, b - sets a to a-b, sets O to 0xffff if there's an underflow, 0x0 otherwise
-    0x4: MUL a, b - sets a to a*b, sets O to ((a*b)>>16)&0xffff
-    0x5: DIV a, b - sets a to a/b, sets O to ((a<<16)/b)&0xffff. if b==0, sets a and O to 0 instead.
-    0x6: MOD a, b - sets a to a%b. if b==0, sets a to 0 instead.
-    0x7: SHL a, b - sets a to a<<b, sets O to ((a<<b)>>16)&0xffff
-    0x8: SHR a, b - sets a to a>>b, sets O to ((a<<16)>>b)&0xffff
-    0x9: AND a, b - sets a to a&b
-    0xa: BOR a, b - sets a to a|b
-    0xb: XOR a, b - sets a to a^b
-    0xc: IFE a, b - performs next instruction only if a==b
-    0xd: IFN a, b - performs next instruction only if a!=b
-    0xe: IFG a, b - performs next instruction only if a>b
-    0xf: IFB a, b - performs next instruction only if (a&b)!=0
+###Basic opcodes: (4 bits)
+        0x0: non-basic instruction - see below
+        0x1: SET a, b - sets a to b
+        0x2: ADD a, b - sets a to a+b, sets O to 0x0001 if there's an overflow, 0x0 otherwise
+        0x3: SUB a, b - sets a to a-b, sets O to 0xffff if there's an underflow, 0x0 otherwise
+        0x4: MUL a, b - sets a to a*b, sets O to ((a*b)>>16)&0xffff
+        0x5: DIV a, b - sets a to a/b, sets O to ((a<<16)/b)&0xffff. if b==0, sets a and O to 0 instead.
+        0x6: MOD a, b - sets a to a%b. if b==0, sets a to 0 instead.
+        0x7: SHL a, b - sets a to a<<b, sets O to ((a<<b)>>16)&0xffff
+        0x8: SHR a, b - sets a to a>>b, sets O to ((a<<16)>>b)&0xffff
+        0x9: AND a, b - sets a to a&b
+        0xa: BOR a, b - sets a to a|b
+        0xb: XOR a, b - sets a to a^b
+        0xc: IFE a, b - performs next instruction only if a==b
+        0xd: IFN a, b - performs next instruction only if a!=b
+        0xe: IFG a, b - performs next instruction only if a>b
+        0xf: IFB a, b - performs next instruction only if (a&b)!=0
     
 * SET, AND, BOR and XOR take 1 cycle, plus the cost of a and b
 * ADD, SUB, MUL, SHR, and SHL take 2 cycles, plus the cost of a and b
@@ -80,14 +80,13 @@ Non-basic opcodes always have their lower four bits unset, have one value and a 
 In binary, they have the format: aaaaaaoooooo0000
 The value (a) is in the same six bit format as defined earlier.
 
-Non-basic opcodes: (6 bits)
-         0x00: reserved for future expansion
-         0x01: JSR a - pushes the address of the next instruction to the stack, then sets PC to a
-         0x02: ROM read - read a value from factory burnt ROM to register I. Passed value is the
-         				 location in ROM to read into register I 
-         0x03: Audio Output - Write register value to 2 channel audio output buffer. Channel a is bits 0x0F and channel b is 0xF0. Absloute values are not allowed. 
-         0x03: Audio Input - Read register value from a 2 channel audio output buffer. Channel a is bits 0x0F and channel b is 0xF0. Absloute values are not allowed. 
-    0x04-0x3f: reserved
+###Non-basic opcodes: (6 bits)
+			0x00: reserved for future expansion
+                 0x01: JSR a - pushes the address of the next instruction to the stack, then sets PC to a
+                 0x02: ROM read - read a value from factory burnt ROM to register I. Passed value is the location in ROM to read into register I 
+                 0x03: Audio Output - Write register value to 2 channel audio output buffer. Channel a is bits 0x0F and channel b is 0xF0. Absloute values are not allowed. 
+                 0x04: Audio Input - Read register value from a 2 channel audio output buffer. Channel a is bits 0x0F and channel b is 0xF0. Absloute values are not allowed. 
+			0x04-0x3f: reserved
     
 * JSR takes 2 cycles, plus the cost of a.
 * ROM read takes 2 cycles
